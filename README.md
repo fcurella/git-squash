@@ -9,6 +9,10 @@ Finally, republish the branch.
 
     git squash BASE-COMMIT-SHA COMMIT-MESSAGE
 
+## Installation
+
+Just copy ``git-squash`` from the ``bin`` directory to somewhere in your ``PATH``.
+
 ## License
 
 MIT License
