@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GITSQUASH_VERSION=0.0.1
+GITSQUASH_VERSION=0.0.2
 
 print_help_and_exit () {
     cat <<EOF
@@ -12,7 +12,7 @@ EOF
     exit
 }
 
-print_help_and_exit () {
+print_version_and_exit () {
     echo "$GITSQUASH_VERSION"
     exit
 }
