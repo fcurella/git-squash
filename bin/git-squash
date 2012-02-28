@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GITSQUASH_VERSION=0.0.2
+GITSQUASH_VERSION=0.0.3
 
 print_help_and_exit () {
     cat <<EOF
@@ -17,24 +17,23 @@ print_version_and_exit () {
     exit
 }
 
-case "$1" in
-  -h|-help|--help|-?)
-    print_help_and_exit
-    ;;
-esac
-
-case "$1" in
-  -v|-version|--version)
-    print_version_and_exit
-    ;;
-esac
-
 if [ -n "$2" ]; then
   COMMIT="$1"
   MESSAGE="$2"
   MESSAGE=${MESSAGE##-m} 
 else
-  print_help_and_exit
+  case "$1" in
+    -v|-version|--version)
+      print_version_and_exit
+      ;;
+  esac
+
+  case "$1" in
+    -h|-help|--help|-?)
+      print_help_and_exit
+      ;;
+  esac
+
 fi
 
 BRANCH="$(git symbolic-ref HEAD 2>/dev/null)" ||
