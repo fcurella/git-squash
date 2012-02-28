@@ -1,0 +1,60 @@
+#!/bin/bash
+
+GITSQUASH_VERSION=0.0.1
+
+print_help_and_exit () {
+    cat <<EOF
+Usage: git squash BASE-COMMIT-SHA COMMIT-MESSAGE
+
+Rollback the repo to BASE-COMMIT-SHA, preserving the changes, then commit them.
+Finally, republish the branch.
+EOF
+    exit
+}
+
+print_help_and_exit () {
+    echo "$GITSQUASH_VERSION"
+    exit
+}
+
+case "$1" in
+  -h|-help|--help|-?)
+    print_help_and_exit
+    ;;
+esac
+
+case "$1" in
+  -v|-version|--version)
+    print_version_and_exit
+    ;;
+esac
+
+if [ -n "$2" ]; then
+  COMMIT="$1"
+  MESSAGE="$2"
+  MESSAGE=${MESSAGE##-m} 
+else
+  print_help_and_exit
+fi
+
+BRANCH="$(git symbolic-ref HEAD 2>/dev/null)" ||
+BRANCH="(unnamed branch)"     # detached HEAD
+
+BRANCH=${BRANCH##refs/heads/}
+
+REMOTE="$(git config --get branch.${BRANCH}.remote)"
+if [ -z "$REMOTE" ]; then
+  REMOTE="origin"
+fi
+
+echo "Reset branch $BRANCH to commit $COMMIT"
+git reset $COMMIT --soft
+echo "Staging"
+git stage .
+echo "Creating new commit: $MESSAGE"
+git commit -m "$MESSAGE"
+
+echo "Deleting branch $BRANCH from remote $REMOTE"
+git push "$REMOTE" ":$BRANCH"
+echo "Publishing branch $BRANCH from remote $REMOTE"
+git push "$REMOTE" "$BRANCH"
